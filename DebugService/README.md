@@ -125,5 +125,3 @@ private DebuggableValueView ViewFactoryMethod(DebuggableValueViewModel vm,
 	}
 
 ```
-
-## InitializationService for Unity Games using Zenject & MVVM
