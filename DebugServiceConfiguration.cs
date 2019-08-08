@@ -26,13 +26,15 @@ public class DebugServiceConfiguration : ServiceConfiguration<DebugService, Inpu
 			                                           $"{nameof(DebugViewPrefab)} parent"));
 	}
 
-
+	//Zenject's Configuration
 	protected override void Configure(DebugService service, InputModel inputModel, MovementDebugModel movementDebugModel)
 	{
-		service.RegisterDebugValue(StepLengthOne, nameof(InputModel.InputType),
-		                           (float)inputModel.InputType, inputModel,
-		                           (model, f) => model.InputType = (InputType)(Mathf.Max(0,f) % 3));
-
+	
+	//Example Registrations for InputController data
+	service.RegisterDebugValue(StepLengthOne, nameof(InputModel.InputType),
+	    (float)inputModel.InputType, inputModel,
+	    (model, f) => model.InputType = (InputType)(Mathf.Max(0,f) % 3));
+	
         service.RegisterDebugValue(StepLengthOneHundredth, nameof(MovementDebugModel.DrawInputMargin),
             (float)movementDebugModel.DrawInputMargin, movementDebugModel,
             (model, f) => model.DrawInputMargin = Mathf.Abs(f));
