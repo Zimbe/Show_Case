@@ -30,7 +30,7 @@ public class DebugServiceConfiguration : ServiceConfiguration<DebugService, Inpu
 	protected override void Configure(DebugService service, InputModel inputModel, MovementDebugModel movementDebugModel)
 	{
 	
-	//Example Registrations for InputController data
+	//Example Registrations for InputModel data
 	service.RegisterDebugValue(StepLengthOne, nameof(InputModel.InputType),
 	    (float)inputModel.InputType, inputModel,
 	    (model, f) => model.InputType = (InputType)(Mathf.Max(0,f) % 3));
