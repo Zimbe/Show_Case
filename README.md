@@ -3,7 +3,7 @@ System for easy value debugging.
 
 **System requires LunarByte.MVVM to work** and a lot more other files :)
 
-I created this system during my Lunarbyte internship in the summer of 2019 and it uses Lunarbyte's MVV framework.
+I created this system during my Lunarbyte internship in the summer of 2019 and it uses Lunarbyte's MVVM framework.
 
 ## How to use
 
@@ -20,7 +20,7 @@ Then you just register it in the Configure method with following example:
 protected override void Configure(DebugService service, InputModel inputModel, MovementDebugModel movementDebugModel)
 	{
 	
-	//Example Registrations for InputController data
+	//Example Registrations for InputModel data
 	service.RegisterDebugValue(StepLengthOne, nameof(InputModel.InputType),
 	    (float)inputModel.InputType, inputModel,
 	    (model, f) => model.InputType = (InputType)(Mathf.Max(0,f) % 3));
@@ -41,9 +41,12 @@ public void RegisterDebugValue<TObservableProperties>(float  stepLength,
 		                                                      propertySetter)
 ```
 ### Tester value adjustment
-Here is a look at Unity Editor view of the hierarchy and UI of the debug menu. DebugView prefab is only given height, rest is anchored and Content gameobject's Content Size Fitter and Vertical Layout Group components keep them nicely aligned. Graphics are very primitive, but it gets the job done.
+Here is a look at Unity Editor view of the hierarchy and UI of the debug menu.
+DebuggableValueView prefab is only given height, rest is anchored and Content gameobject's **Content Size Fitter** and **Vertical Layout Group** components keep them nicely aligned.
+Graphics are very primitive, but it gets the job done.
 From registration to DebuggableValueView, they are created through DynamicFactory which is showcased in the **How it works** section.
-Debug menu functionality:
+
+#### Debug menu functionality:
 - Increase and Decrease the value with + and - buttons the previously configured step length for each press.
 - Hold + or - button to continuously increase the value, if you want drastic changes.
 - You can reset the value to the saved value.
@@ -56,5 +59,71 @@ You can also spot a ValuesToClipboardButton and yes, it does just what it says. 
 System uses Zenject and MVVM framework from Lunarbyte.
 ### Dynamic View and ViewModel creation
 First of all thevalue's addition to debug menu needs to be dynamic and it is created through [DynamicDebugViewConfiguration.cs](https://github.com/Zimbe/Show_Case/blob/master/DynamicDebugViewConfiguration.cs)
+
+Debuggable data is stored in the actual model where it is stored and it is bound to automatically generated [DebuggableValueModel's](https://github.com/Zimbe/Show_Case/blob/master/DebuggableValueModel.cs) equilevant. Then the ViewModel and View are bound as well.
+```
+protected override void Configure(DynamicModelContainer<DebuggableValueModel> modelContainer,
+	                                  DynamicViewModelContainer<DebuggableValueViewModel>
+		                                  viewModelContainer,
+	                                  DebugViewContainer         viewContainer,
+	                                  DebugService               debugService,
+	                                  DebuggableValueViewFactory debuggableValueViewFactory)
+	{
+		viewModelContainer.BindContainer()
+		                  .ToContainer(modelContainer,
+		                               model => ViewModelFactoryMethod(model, debugService));
+
+		viewContainer.BindContainer().ToContainer(viewModelContainer,
+		                                          vm => ViewFactoryMethod(
+			                                          vm, debuggableValueViewFactory,
+			                                          viewContainer.transform));
+	}
+```
+Here is the dynamic creation and binding of [DebuggableValueViewModel](https://github.com/Zimbe/Show_Case/blob/master/DebuggableValueViewModel.cs)
+```
+private DebuggableValueViewModel ViewModelFactoryMethod(DebuggableValueModel model,
+	                                                        DebugService         debugService)
+	{
+		var viewModel = new DebuggableValueViewModel
+		{
+			Value = model.Value,
+			Name = model.Name
+		};
+
+		viewModel.Bind<DebuggableValueViewModel, float>(value => viewModel.Value = value)
+		         .ToProperty(model, m => m.Value, nameof(DebuggableValueModel.Value));
+
+		viewModel.Bind<DebuggableValueViewModel, string>(dName => viewModel.Name = dName)
+		         .ToProperty(model, m => m.Name, nameof(DebuggableValueModel.Name));
+
+		viewModel.IncreaseValueEvent.AddListener(model.IncreaseValue);
+		viewModel.DecreaseValueEvent.AddListener(model.DecreaseValue);
+		viewModel.ChangeValueInputFieldEvent.AddListener(model.ChangeValueInputField);
+		viewModel.ResetValueEvent.AddListener(() => debugService.ResetValue(model));
+		viewModel.SaveValueEvent.AddListener(() => debugService.SaveValue(model));
+
+		return viewModel;
+	}
+```
+Here is the dynamic creation and binding of [DebuggableValueView](https://github.com/Zimbe/Show_Case/blob/master/DebuggableValueView.cs)
+```
+private DebuggableValueView ViewFactoryMethod(DebuggableValueViewModel vm,
+	                                              DebuggableValueViewFactory
+		                                              debuggableValueViewFactory,
+	                                              Transform parent)
+	{
+		DebuggableValueView view = debuggableValueViewFactory.Create(vm);
+		view.transform.SetParent(parent, false);
+
+		view.Bind<DebuggableValueView, float>(x => view.UpdateDebugValueText(x))
+		    .ToProperty(vm, x => vm.Value, nameof(DebuggableValueViewModel.Value));
+
+		view.Bind<DebuggableValueView, string>(x => view.SetDebugValueName(x))
+		    .ToProperty(vm, x => vm.Name, nameof(DebuggableValueViewModel.Name));
+
+		return view;
+	}
+
+```
 
 ## InitializationService for Unity Games using Zenject & MVVM
