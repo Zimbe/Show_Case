@@ -1,13 +1,13 @@
-# DebugService for Unity Games using Zenject & MVVM
+## DebugService for Unity Games using Zenject & MVVM
 System for easy value debugging.
 
 **System requires LunarByte.MVVM to work** and a lot more other files :)
 
 I created this system during my Lunarbyte internship in the summer of 2019 and it uses Lunarbyte's MVV framework.
 
-## How to use
+### How to use
 
-### Value registration
+#### Value registration
 DebugService has a configuration file where you just have to write the registration as follows:
 
 You add your value's model as dependency to the configuration file and it gets there through zenject injection
@@ -40,7 +40,7 @@ public void RegisterDebugValue<TObservableProperties>(float  stepLength,
 	                                                      Action<TObservableProperties, float>
 		                                                      propertySetter)
 ```
-### Tester value adjustment
+#### Tester value adjustment
 Here is a look at Unity Editor view of the hierarchy and UI of the debug menu. DebugView prefab is only given height, rest is anchored and Content gameobject's Content Size Fitter and Vertical Layout Group components keep them nicely aligned. Graphics are very primitive, but it gets the job done.
 From registration to DebuggableValueView, they are created through DynamicFactory which is showcased in the **How it works** section.
 Debug menu functionality:
@@ -48,11 +48,13 @@ Debug menu functionality:
 - Hold + or - button to continuously increase the value, if you want drastic changes.
 - You can reset the value to the saved value.
 - You can Save the value if you want to hold is as a default when switching between values.
+
 ![DebugServiceHierarchy](https://github.com/Zimbe/Show_Case/blob/master/GithubImages/ShowCasePictures/DebugService.PNG)
+
 You can also spot a ValuesToClipboardButton and yes, it does just what it says. It exports the values to Json file to your clipboard for easy sharing among the development team. Also importing is on TODOlist.
-## How it works
+### How it works
 System uses Zenject and MVVM framework from Lunarbyte.
-### Dynamic View and ViewModel creation
+#### Dynamic View and ViewModel creation
 First of all thevalue's addition to debug menu needs to be dynamic and it is created through [DynamicDebugViewConfiguration.cs](https://github.com/Zimbe/Show_Case/blob/master/DynamicDebugViewConfiguration.cs)
 
-# InitializationService for Unity Games using Zenject & MVVM
+## InitializationService for Unity Games using Zenject & MVVM
