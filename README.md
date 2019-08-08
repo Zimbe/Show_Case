@@ -11,7 +11,7 @@
 
 <img src="https://github.com/Zimbe/Show_Case/blob/master/GithubImages/ShowCasePictures/block_way_1.png" alt="" width="189" height="300">
 
-## DebugService
+## DebugService && InitializationService
 
-[DebugService](https://github.com/Zimbe/Show_Case/tree/master/DebugService) which I made during my time at Lunarbyte's internship.
+[DebugService && InitializationService](https://github.com/Zimbe/Show_Case/tree/master/DebugService) which I made during my time at Lunarbyte's internship.
 More information inside link.
