@@ -39,6 +39,8 @@ public void RegisterDebugValue<TObservableProperties>(float  stepLength,
 		                                                      observableProperties,
 	                                                      Action<TObservableProperties, float>
 		                                                      propertySetter)
+		where TObservableProperties : class, IObservableProperties
+	{
 ```
 ### Tester value adjustment
 Here is a look at Unity Editor view of the hierarchy and UI of the debug menu.
