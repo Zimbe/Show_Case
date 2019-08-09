@@ -25,7 +25,9 @@ protected override void Configure(DebugService service, InputModel inputModel, M
 	    (float)inputModel.InputType, inputModel,
 	    (model, f) => model.InputType = (InputType)(Mathf.Max(0,f) % 3));
 ```
-Different parameters are as follows:
+Above is the extent you have to go through to get a new debug value to the debug menu.
+
+Different parameter specifics are as follows:
 1. Steplengths are defined in the file and you just pick one and add it as first parameter.
 2. You give it a name of which it can identify itself with and show in the view portion.
 3. Then you give it default value
